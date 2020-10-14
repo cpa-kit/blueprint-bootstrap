@@ -1,0 +1,117 @@
+apiVersion: kpt.dev/v1alpha1
+kind: Kptfile
+metadata:
+  name: bootstrap-blueprint
+upstream:
+  type: git
+  git:
+    commit: a71d8264a4e770ebfbb1b701fbe84230d3909fc3
+    repo: git@github.com:cpa-kit/blueprint-bootstrap
+    directory: /
+    ref: master
+packageMetadata:
+  shortDescription: sample description
+openAPI:
+  definitions:
+    io.k8s.cli.setters.billing-account:
+      x-k8s-cli:
+        setter:
+          name: billing-account
+          required: true
+          value: 00E7A7-4928AF-F1C514
+          isSet: true
+    io.k8s.cli.setters.env-dev:
+      x-k8s-cli:
+        setter:
+          isSet: true
+          name: env-dev
+          value: yuwen-kit-dev
+    io.k8s.cli.setters.env-staging:
+      x-k8s-cli:
+        setter:
+          isSet: true
+          name: env-staging
+          value: yuwen-kit-staging
+    io.k8s.cli.setters.folder-id:
+      x-k8s-cli:
+        setter:
+          isSet: true
+          name: folder-id
+          required: true
+          value: "78821025809"
+    io.k8s.cli.setters.location:
+      x-k8s-cli:
+        setter:
+          name: location
+          value: us-central1
+    io.k8s.cli.setters.platform-project:
+      x-k8s-cli:
+        setter:
+          isSet: true
+          name: platform-project
+          required: true
+          value: kit-platform-1
+    io.k8s.cli.setters.tool-project:
+      x-k8s-cli:
+        setter:
+          isSet: true
+          name: tool-project
+          value: kit-tool-1
+    io.k8s.cli.substitutions.acm-importer-associate:
+      x-k8s-cli:
+        substitution:
+          name: acm-importer-associate
+          pattern: serviceAccount:${platform-project}.svc.id.goog[config-management-system/importer]
+          values:
+          - marker: ${platform-project}
+            ref: '#/definitions/io.k8s.cli.setters.platform-project'
+    io.k8s.cli.substitutions.acp-cluster:
+      x-k8s-cli:
+        substitution:
+          name: acp-cluster
+          pattern: gke://${platform-project}/${location}/acp
+          values:
+          - marker: ${platform-project}
+            ref: '#/definitions/io.k8s.cli.setters.platform-project'
+          - marker: ${location}
+            ref: '#/definitions/io.k8s.cli.setters.location'
+    io.k8s.cli.substitutions.acp-identity:
+      x-k8s-cli:
+        substitution:
+          name: acp-identity
+          pattern: ${platform-project}.svc.id.goog
+          values:
+          - marker: ${platform-project}
+            ref: '#/definitions/io.k8s.cli.setters.platform-project'
+    io.k8s.cli.substitutions.cnrm-sa:
+      x-k8s-cli:
+        substitution:
+          name: cnrm-sa
+          pattern: serviceAccount:cnrm-controller-manager@${platform-project}.iam.gserviceaccount.com
+          values:
+          - marker: ${platform-project}
+            ref: '#/definitions/io.k8s.cli.setters.platform-project'
+    io.k8s.cli.substitutions.cnrm-sa-associate:
+      x-k8s-cli:
+        substitution:
+          name: cnrm-sa-associate
+          pattern: serviceAccount:${platform-project}.svc.id.goog[cnrm-system/cnrm-controller-manager]
+          values:
+          - marker: ${platform-project}
+            ref: '#/definitions/io.k8s.cli.setters.platform-project'
+    io.k8s.cli.substitutions.cnrm-system-sa:
+      x-k8s-cli:
+        substitution:
+          name: cnrm-system-sa
+          pattern: cnrm-system@${platform-project}.iam.gserviceaccount.com
+          values:
+          - marker: ${platform-project}
+            ref: '#/definitions/io.k8s.cli.setters.platform-project'
+    io.k8s.cli.substitutions.cpa-sa:
+      x-k8s-cli:
+        substitution:
+          name: cpa-sa
+          pattern: cnrm-controller-manager@${platform-project}.iam.gserviceaccount.com
+          values:
+          - marker: ${platform-project}
+            ref: '#/definitions/io.k8s.cli.setters.platform-project'

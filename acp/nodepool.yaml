@@ -1,0 +1,21 @@
+apiVersion: container.cnrm.cloud.google.com/v1beta1
+kind: ContainerNodePool
+metadata:
+  name: acp-default
+  namespace: kit-platform-1 # {"$kpt-set":"platform-project"}
+  annotations:
+    gke.io/cluster: bootstrap://
+spec:
+  autoscaling:
+    # Note that minNodeCount & maxNodeCount are per-zone, for regional clusters
+    minNodeCount: 1
+    maxNodeCount: 2
+  nodeConfig:
+    diskSizeGb: 100
+    diskType: pd-standard
+    machineType: n1-standard-4
+  management:
+    autoRepair: true
+    autoUpgrade: true
+  clusterRef:
+    name: acp

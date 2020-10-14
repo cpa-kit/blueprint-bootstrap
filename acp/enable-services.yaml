@@ -1,0 +1,17 @@
+# GKE
+apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
+kind: Service
+metadata:
+  name: container.googleapis.com
+  namespace: kit-platform-1 # {"$kpt-set":"platform-project"}
+  annotations:
+    gke.io/cluster: bootstrap://
+---
+# Used to enable services
+apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
+kind: Service
+metadata:
+  name: serviceusage.googleapis.com
+  namespace: kit-platform-1 # {"$kpt-set":"platform-project"}
+  annotations:
+    gke.io/cluster: bootstrap://

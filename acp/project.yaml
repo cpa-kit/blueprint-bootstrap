@@ -1,0 +1,28 @@
+# apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+# kind: Project
+# metadata:
+#   name: kit-platform-1 # {"$kpt-set":"platform-project"}
+#   namespace: kit-platform-1 # {"$kpt-set":"platform-project"}
+#   annotations:
+#     cnrm.cloud.google.com/folder-id: "78821025809" # {"$kpt-set":"folder-id"}
+#     gke.io/cluster: bootstrap://
+# spec:
+#   name: kit-platform-1 # {"$kpt-set":"platform-project"}
+#   billingAccountRef:
+#     external: "00E7A7-4928AF-F1C514" # {"$kpt-set":"billing-account"}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: cnrm-controller-manager:project
+  namespace: kit-platform-1 # {"$kpt-set":"platform-project"}
+  annotations:
+    gke.io/cluster: bootstrap://
+spec:
+  member: serviceAccount:cnrm-controller-manager@kit-platform-1.iam.gserviceaccount.com # {"$kpt-set":"cnrm-sa"}
+  role: roles/owner
+  resourceRef:
+    kind: Project
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    # anthoscli only supports external currently
+    external: kit-platform-1 # {"$kpt-set":"platform-project"}

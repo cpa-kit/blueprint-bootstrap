@@ -1,0 +1,15 @@
+apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
+kind: Service
+metadata:
+  name: sourcerepo.googleapis.com
+  namespace: kit-platform-1 # {"$kpt-set":"platform-project"}
+  annotations:
+    gke.io/cluster: bootstrap://
+---
+apiVersion: cnrm.cloud.google.com/v1alpha2
+kind: SourceRepo
+metadata:
+  name: "management"
+  namespace: kit-platform-1 # {"$kpt-set":"platform-project"}
+  annotations:
+    gke.io/cluster: bootstrap://

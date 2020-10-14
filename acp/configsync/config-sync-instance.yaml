@@ -1,0 +1,46 @@
+apiVersion: configmanagement.gke.io/v1
+kind: ConfigManagement
+metadata:
+  name: config-management
+  annotations:
+    gke.io/cluster: gke://kit-platform-1/us-central1/acp # {"$kpt-set":"acp-cluster"}
+spec:
+  clusterName: "gke://kit-platform-1/us-central1/acp" # {"$kpt-set":"acp-cluster"}
+  git:
+    syncRepo: "https://kit-server.dev.kit.containuous.com/repo/platform" # cluster-repo-url 
+    #secretType: cookiefile
+    secretType: gcenode # use workload identity
+    policyDir: "/platform" # sync-repo-dir
+  # We'll manage Config Connector directly
+  configConnector:
+    enabled: false
+  sourceFormat: unstructured
+---
+apiVersion: iam.cnrm.cloud.google.com/v1alpha1
+kind: IAMServiceAccount
+metadata:
+  name: anthos-config-management
+  namespace: kit-platform-1 # {"$kpt-set":"platform-project"}
+  annotations:
+    gke.io/cluster: bootstrap://
+spec:
+  displayName: Service Account for Anthos Config Management
+  projectRoles:
+  - roles/source.reader # TODO: Grant read access only to the repo
+---
+apiVersion: iam.cnrm.cloud.google.com/v1alpha1
+kind: IAMPolicy
+metadata:
+  name: anthos-config-management
+  namespace: kit-platform-1 # {"$kpt-set":"platform-project"}
+  annotations:
+    gke.io/cluster: bootstrap://
+spec:
+  resourceRef:
+    apiVersion: iam.cnrm.cloud.google.com/v1alpha1
+    kind: IAMServiceAccount
+    name: anthos-config-management
+  bindings:
+  - role: roles/iam.workloadIdentityUser
+    members:
+    - serviceAccount:kit-platform-1.svc.id.goog[config-management-system/importer] # {"$kpt-set":"acm-importer-associate"}
